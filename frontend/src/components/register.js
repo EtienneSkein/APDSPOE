@@ -6,10 +6,20 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [error, setError] = useState(""); // Error state for validation messages
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Updated password regex that allows hyphens (-) and other special characters
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>/?[\]\\|`~])[A-Za-z\d!@#$%^&*()\-_=+{};:,<.>/?[\]\\|`~]{8,}$/;
+    
+    if (!passwordRegex.test(password)) {
+      setError("Password must be at least 8 characters and include one letter, one number, and one special character.");
+      return;
+    }
 
     try {
       const response = await fetch("https://localhost:3001/customer/register", {
@@ -19,13 +29,17 @@ export default function Register() {
         },
         body: JSON.stringify({ fullName, password, accountNumber, idNumber })
       });
+
+      const data = await response.json();
+
       if (response.ok) {
         navigate("/login");
       } else {
-        alert("Failed to register.");
+        setError(data.message || "Failed to register.");
       }
     } catch (error) {
       console.error("Error registering:", error);
+      setError("A network error occurred. Please try again.");
     }
   };
 
@@ -45,6 +59,7 @@ export default function Register() {
             title="Please enter a valid full name (letters and spaces only, 2-50 characters)"
           />
         </div>
+
         <div className="mb-3">
           <label>Password</label>
           <input
@@ -53,10 +68,11 @@ export default function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
-            title="Password must be at least 8 characters long and include at least one letter and one number"
           />
+          {/* Show error message if password is invalid */}
+          {error && <div className="text-danger mt-2">{error}</div>}
         </div>
+
         <div className="mb-3">
           <label>Account Number</label>
           <input
@@ -69,6 +85,7 @@ export default function Register() {
             title="Please enter a valid account number (10-20 digits)"
           />
         </div>
+
         <div className="mb-3">
           <label>ID Number</label>
           <input
@@ -81,6 +98,7 @@ export default function Register() {
             title="Please enter a valid ID number (6-20 digits)"
           />
         </div>
+
         <button type="submit" className="btn btn-primary w-100">Register</button>
       </form>
     </div>
