@@ -18,7 +18,7 @@ jobs:
           name: Run tests
           command: npm test --passWithNoTests
   deploy:
-    # This is an example deploy job, not actually used by the workflow
+    # This is an example deploy job, not actually used by the workflow test
     docker:
       - image: cimg/base:stable
     steps:
