@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-//Test
+//Test 2
 
 export default function Register() {
   const [fullName, setFullName] = useState("");
