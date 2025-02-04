@@ -52,7 +52,4 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - test-node
-    # - deploy:
-    #     requires:
-    #       - test-node
+      - sonarqube
